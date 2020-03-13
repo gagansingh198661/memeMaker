@@ -32,6 +32,11 @@
             <artifactId>h2</artifactId>
         </dependency>
          <dependency>
+	        <groupId>org.springframework.social</groupId>
+	        <artifactId>spring-social-facebook</artifactId>
+	        <version>2.0.3.RELEASE</version>
+	    </dependency>
+         <dependency>
                      <groupId>org.springframework.boot</groupId>
                      <artifactId>spring-boot-starter-data-jpa</artifactId>
 		      <exclusions>
@@ -52,10 +57,19 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		
 	</dependencies>
 
 	<build>
 		<plugins>
+		<plugin>
+	     <groupId>com.google.cloud.tools</groupId>
+      	<artifactId>appengine-maven-plugin</artifactId>
+      	<version>1.3.2</version>
+	      <configuration>
+	        <version>1</version>
+	      </configuration>
+      	</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
