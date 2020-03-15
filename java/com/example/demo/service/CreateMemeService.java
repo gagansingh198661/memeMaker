@@ -2,11 +2,15 @@ package com.example.demo.service;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -19,6 +23,9 @@ import com.example.demo.dtos.MemeDTO;
 public class CreateMemeService {
 	
 	private static String fileName = "test.jpg";
+	
+	@Autowired
+	private ResourceLoader loader;
 	
 	public String createMeme(MemeDTO dto) {
 		BufferedImage scaleimg = scaleImage(dto.getImageName());
@@ -42,9 +49,13 @@ public class CreateMemeService {
 		BufferedImage resized = null;
 		try {
 			
-			//File file = ResourceUtils.getFile("classpath:application.properties");
-			File file = ResourceUtils.getFile("classpath:static/"+imageName);
-			scaleimg  = ImageIO.read(file);
+			Resource resource = loader.getResource("classpath:static/"+imageName);
+			InputStream inputStream = resource.getInputStream();
+			File temporaryFile = File.createTempFile("temporary", "temp");
+			temporaryFile.deleteOnExit();
+			FileOutputStream out = new FileOutputStream(temporaryFile);
+			IOUtils.copy(inputStream, out);
+			scaleimg  = ImageIO.read(temporaryFile);
 		    int dWidth =  (int) (scaleimg.getWidth()*(0.75)) ; 
 		    int dHeight = (int) (scaleimg.getHeight()*(0.75));
 		    resized = new BufferedImage(dWidth, dHeight, scaleimg.getType());
